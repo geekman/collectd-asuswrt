@@ -1,0 +1,52 @@
+#!/bin/sh
+
+log() { logger -t collectd -s $*; }
+
+[ -z "$1" ] && exit 2
+
+PIDFILE=/var/run/collectd.pid
+
+start_svc() {
+	log "starting collectd..."
+	if [ -e $PIDFILE ]; then
+		if [ -d "/proc/`cat $PIDFILE`" ]; then
+			log "collectd already running."
+			exit 1
+		else
+			log "removing stale pid file"
+			rm -f $PIDFILE
+		fi
+	fi
+	if [ ! -e "/opt/collectd.conf" ]; then
+		log "cant find collectd.conf"
+		exit 1
+	fi
+	awk '{ if (match($0, /^<\?(.*)?>/)) {
+		cmd = substr($0, RSTART+2, RLENGTH-2-2); system(cmd) 
+	} else print }' < /opt/etc/collectd.conf > /tmp/collectd.conf
+
+	/opt/sbin/collectd -C /tmp/collectd.conf -P $PIDFILE -B
+}
+
+stop_svc() {
+        [ -e $PIDFILE ] && kill `cat $PIDFILE` || killall collectd
+}
+
+
+log "script invoked with $1..."
+
+case "$1" in
+		start) start_svc ;;
+		stop)  stop_svc ;;
+
+		reload|force-reload|restart)
+			stop_svc
+			start_svc
+			;;
+
+        *)
+			log "unknown script action $1"
+			exit 2
+			;;
+esac
+
