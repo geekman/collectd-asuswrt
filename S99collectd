@@ -5,6 +5,7 @@ log() { logger -t collectd -s $*; }
 [ -z "$1" ] && exit 2
 
 PIDFILE=/var/run/collectd.pid
+CONFFILE=/opt/etc/collectd.conf
 
 start_svc() {
 	log "starting collectd..."
@@ -17,13 +18,13 @@ start_svc() {
 			rm -f $PIDFILE
 		fi
 	fi
-	if [ ! -e "/opt/collectd.conf" ]; then
+	if [ ! -e "$CONFFILE" ]; then
 		log "cant find collectd.conf"
 		exit 1
 	fi
 	awk '{ if (match($0, /^<\?(.*)?>/)) {
 		cmd = substr($0, RSTART+2, RLENGTH-2-2); system(cmd) 
-	} else print }' < /opt/etc/collectd.conf > /tmp/collectd.conf
+	} else print }' < $CONFFILE > /tmp/collectd.conf
 
 	/opt/sbin/collectd -C /tmp/collectd.conf -P $PIDFILE -B
 }
