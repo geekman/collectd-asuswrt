@@ -7,7 +7,7 @@
 set -e 
 
 CROSS_COMPILE=arm-brcm-linux-uclibcgnueabi
-SRCDIR="`dirname \"$0\"`"
+SRCDIR="`dirname \"$0\"`/files"
 
 [ -x ./configure ] || exit
 
