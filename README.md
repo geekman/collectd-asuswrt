@@ -14,3 +14,23 @@ This repo helps with cross-compiling collectd for ASUSWRT routers.
 
    You can specify the toolchain to use with the `CROSS_COMPILE` environment variable.
 
+
+Installation
+--------------
+
+You should have a writable partition mounted at `/opt`.
+This is usually a JFFS partition on flash, or an external USB drive that is
+plugged into the router.
+
+To install collectd, download the tar.gz file onto your router (most likely to
+`/tmp`), then unpack into `/opt`:
+
+```
+$ cd /opt
+$ tar xzvf /tmp/collectd-$ver.tar.gz
+```
+
+You need to edit the `collectd.conf` configuration file.
+
+The collectd service should start automatically on boot.
+
