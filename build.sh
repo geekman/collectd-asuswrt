@@ -61,7 +61,7 @@ build() {
 
 	rm -rf installroot
 	mkdir  installroot
-	make install DESTDIR=$PWD/installroot
+	make install-strip DESTDIR=$PWD/installroot
 }
 
 package() {
@@ -96,7 +96,6 @@ builddir="$srcdir/build"
 [ -d "$srcdir/build" ] || mkdir "$srcdir/build"
 
 export CFLAGS="-DNEED_PRINTF"
-export LDFLAGS="-s"
 
 if [ "$#" -lt 1 ]; then
 	extract
