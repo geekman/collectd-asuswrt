@@ -7,10 +7,11 @@
 set -e 
 
 PKGVER=5.9.0
+PKGREL=1
 PKGURL="https://collectd.org/files/collectd-$PKGVER.tar.bz2"
 SHA256SUM=7b220f8898a061f6e7f29a8c16697d1a198277f813da69474a67911097c0626b
 
-OUT_TARBALL=collectd-$PKGVER.tar.gz
+OUT_TARBALL=collectd-${PKGVER}-${PKGREL}${PKGEXTRA}.tar.gz
 
 fakeroot -v >/dev/null 2>/dev/null || exit
 
