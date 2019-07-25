@@ -103,6 +103,9 @@ if [ "$#" -lt 1 ]; then
 	prepare
 	build
 	package
+
+	# clean up after done
+	rm -rf "$srcdir/collectd-$PKGVER"
 else
 	type $1 >/dev/null && $1 || echo "invalid build stage $1"
 fi
