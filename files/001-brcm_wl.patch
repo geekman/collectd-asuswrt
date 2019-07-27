@@ -1,0 +1,60 @@
+diff --git a/Makefile.am b/Makefile.am
+index 85f8da8a..ae2a8f29 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -752,6 +752,12 @@ bind_la_LDFLAGS = $(PLUGIN_LDFLAGS)
+ bind_la_LIBADD = $(BUILD_WITH_LIBCURL_LIBS) $(BUILD_WITH_LIBXML2_LIBS)
+ endif
+ 
++if BUILD_PLUGIN_BRCM_WL
++pkglib_LTLIBRARIES += brcm_wl.la
++brcm_wl_la_SOURCES = src/brcm_wl.c
++brcm_wl_la_LDFLAGS = $(PLUGIN_LDFLAGS)
++endif
++
+ if BUILD_PLUGIN_CEPH
+ pkglib_LTLIBRARIES += ceph.la
+ ceph_la_SOURCES = src/ceph.c
+diff --git a/configure.ac b/configure.ac
+index c95422f4..d8ef9c0d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -6367,6 +6367,7 @@ plugin_ascent="no"
+ plugin_barometer="no"
+ plugin_battery="no"
+ plugin_bind="no"
++plugin_brcm_wl="yes"
+ plugin_ceph="no"
+ plugin_cgroups="no"
+ plugin_conntrack="no"
+@@ -6790,6 +6791,7 @@ AC_PLUGIN([ascent],              [$plugin_ascent],            [AscentEmu player
+ AC_PLUGIN([barometer],           [$plugin_barometer],         [Barometer sensor on I2C])
+ AC_PLUGIN([battery],             [$plugin_battery],           [Battery statistics])
+ AC_PLUGIN([bind],                [$plugin_bind],              [ISC Bind nameserver statistics])
++AC_PLUGIN([brcm_wl],             [$plugin_brcm_wl],           [Broadcom wireless stats])
+ AC_PLUGIN([ceph],                [$plugin_ceph],              [Ceph daemon statistics])
+ AC_PLUGIN([cgroups],             [$plugin_cgroups],           [CGroups CPU usage accounting])
+ AC_PLUGIN([chrony],              [yes],                       [Chrony statistics])
+@@ -7217,6 +7219,7 @@ AC_MSG_RESULT([    ascent  . . . . . . . $enable_ascent])
+ AC_MSG_RESULT([    barometer . . . . . . $enable_barometer])
+ AC_MSG_RESULT([    battery . . . . . . . $enable_battery])
+ AC_MSG_RESULT([    bind  . . . . . . . . $enable_bind])
++AC_MSG_RESULT([    brcm_wl   . . . . . . $enable_brcm_wl])
+ AC_MSG_RESULT([    ceph  . . . . . . . . $enable_ceph])
+ AC_MSG_RESULT([    cgroups . . . . . . . $enable_cgroups])
+ AC_MSG_RESULT([    chrony. . . . . . . . $enable_chrony])
+diff --git a/src/types.db b/src/types.db
+index 69f59b06..cfaad6c1 100644
+--- a/src/types.db
++++ b/src/types.db
+@@ -282,6 +282,10 @@ vs_memory               value:GAUGE:0:9223372036854775807
+ vs_processes            value:GAUGE:0:65535
+ vs_threads              value:GAUGE:0:65535
+ 
++wl_traffic              tx_ucast_pkts:GAUGE:0:U, tx_ucast_bytes:GAUGE:0:U, tx_mcast_pkts:GAUGE:0:U, tx_mcast_bytes:GAUGE:0:U, rx_ucast_pkts:GAUGE:0:U, rx_ucast_bytes:GAUGE:0:U, rx_mcast_pkts:GAUGE:0:U, rx_mcast_bytes:GAUGE:0:U, decrypt_failures:GAUGE:0:U
++wl_stats                assoctime:GAUGE:0:U, idletime:GAUGE:0:U, rssi0:GAUGE:-100:0, rssi1:GAUGE:-100:0, rssi2:GAUGE:-100:0, rssi3:GAUGE:-100:0
++
++
+ #
+ # Legacy types
+ # (required for the v5 upgrade target)

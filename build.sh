@@ -7,7 +7,7 @@
 set -e 
 
 PKGVER=5.9.0
-PKGREL=1
+PKGREL=2
 PKGURL="https://collectd.org/files/collectd-$PKGVER.tar.bz2"
 SHA256SUM=7b220f8898a061f6e7f29a8c16697d1a198277f813da69474a67911097c0626b
 
@@ -48,6 +48,10 @@ extract() {
 
 prepare() {
 	cd collectd-$PKGVER
+
+	patch -p1 -t -i $srcdir/files/001-brcm_wl.patch
+	cp $srcdir/files/brcm_wl.c  src/
+	cp $srcdir/files/wl_ioctl.h src/
 }
 
 build() {
@@ -77,6 +81,10 @@ package() {
 	find installroot -type f -path '*/bin/collectd*' -exec rm -f {} \;
 	find installroot -type f -path '*/sbin/collectdmon' -exec rm -f {} \;
 	find installroot -depth -empty -exec rmdir {} \;
+
+	# config files
+	mv installroot/opt/etc/collectd.conf             installroot/opt/etc/collectd.conf.def
+	install -m0644 -D $srcdir/files/collectd.conf    installroot/opt/etc/collectd.conf
 
 	# add in our files
 	install -m0644 -D $srcdir/files/collectd.control installroot/opt/lib/ipkg/info/collectd.control

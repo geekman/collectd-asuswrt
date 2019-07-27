@@ -34,3 +34,16 @@ You need to edit the `collectd.conf` configuration file.
 
 The collectd service should start automatically on boot.
 
+
+brcm_wl module
+================
+
+The inclusion of the `brcm_wl` plugin enables collection of detailed statistics
+of wireless clients, such as association time, idle time, TX/RX bytes and
+packets, RSSI levels, etc.
+
+This plugin only works on (certain?) Broadcom wireless chipsets, because it
+communicates directly with the driver to retrieve the information.
+
+I have tested it to work on the *ASUS RT-AC68U* and the *D-Link DIR-868L*.
+
